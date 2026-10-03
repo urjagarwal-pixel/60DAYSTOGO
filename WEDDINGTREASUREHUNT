@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operation: 60 Days to Forever</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ivory:#fbf8f2;
+  --cream:#f3ede3;
+  --gold:#b58a4a;
+  --dark:#302a25;
+  --muted:#756d65;
+  --line:#dfd2c1;
+  --white:#fffdf9;
+  --error:#a74b4b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(181,138,74,.10), transparent 30%),
+    radial-gradient(circle at 90% 90%, rgba(181,138,74,.08), transparent 28%),
+    var(--ivory);
+  color:var(--dark);
+  font-family:Montserrat,Arial,sans-serif;
+}
+.screen{
+  display:none;
+  min-height:100vh;
+  padding:28px 18px 40px;
+  align-items:center;
+  justify-content:center;
+}
+.screen.active{display:flex}
+.card{
+  width:min(620px,100%);
+  background:rgba(255,253,249,.94);
+  border:1px solid var(--line);
+  box-shadow:0 20px 70px rgba(63,47,30,.10);
+  border-radius:24px;
+  padding:38px 25px;
+  text-align:center;
+}
+.eyebrow{
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  font-size:11px;
+  color:var(--gold);
+  font-weight:700;
+}
+h1,h2,.big{
+  font-family:"Cormorant Garamond",serif;
+}
+h1{
+  font-size:clamp(46px,13vw,78px);
+  line-height:.88;
+  margin:16px 0 12px;
+  font-weight:600;
+}
+h2{
+  font-size:clamp(34px,9vw,52px);
+  line-height:.95;
+  margin:10px 0 18px;
+}
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+  max-width:500px;
+  margin:0 auto 25px;
+}
+.date{
+  font-family:"Cormorant Garamond",serif;
+  font-size:25px;
+  letter-spacing:.18em;
+  margin:16px 0 28px;
+}
+.btn{
+  appearance:none;
+  border:0;
+  border-radius:999px;
+  background:var(--dark);
+  color:white;
+  padding:15px 25px;
+  font-family:Montserrat,sans-serif;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.2s;
+}
+.btn:hover{transform:translateY(-2px);background:#1e1a17}
+.lock-no{
+  display:inline-flex;
+  width:42px;height:42px;
+  align-items:center;justify-content:center;
+  border-radius:50%;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-weight:700;
+  margin-bottom:12px;
+}
+.prompt{
+  margin:25px auto;
+  padding:22px 20px;
+  background:var(--cream);
+  border-radius:18px;
+  text-align:left;
+  font-family:"Cormorant Garamond",serif;
+  font-size:20px;
+  line-height:1.45;
+}
+.prompt.center{text-align:center}
+.quote{
+  font-family:"Cormorant Garamond",serif;
+  font-size:22px;
+  line-height:1.5;
+  margin:12px 0;
+}
+.input-wrap{margin:20px auto 8px;max-width:420px}
+input{
+  width:100%;
+  border:1px solid var(--line);
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  outline:none;
+  font-size:15px;
+  letter-spacing:.08em;
+  font-weight:600;
+  color:var(--dark);
+}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(181,138,74,.12)}
+.error{
+  min-height:20px;
+  color:var(--error);
+  font-size:12px;
+  margin:8px 0 0;
+}
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:20px auto;
+  max-width:420px;
+}
+.option{
+  padding:15px 10px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:white;
+  cursor:pointer;
+  font-weight:600;
+}
+.option:hover{border-color:var(--gold)}
+.option.correct{background:#eee5d7;border-color:var(--gold)}
+.progress{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:3px;
+  background:#e8dfd2;
+  z-index:5;
+}
+.progress span{
+  display:block;height:100%;width:0;
+  background:var(--gold);
+  transition:.4s;
+}
+.small{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:20px;
+}
+.reveal{
+  border:1px solid var(--gold);
+  padding:25px 18px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#fffdf8,#f5ecdf);
+}
+.place{
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(38px,10vw,58px);
+  font-weight:700;
+  line-height:.95;
+  margin:12px 0;
+}
+.time{
+  font-family:"Cormorant Garamond",serif;
+  font-size:28px;
+  margin:5px 0 18px;
+}
+.heart{color:#a55a55}
+.hidden{display:none!important}
+@media(max-width:430px){
+  .card{padding:32px 18px}
+  .options{grid-template-columns:1fr}
+  .prompt{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress"><span id="progressBar"></span></div>
+
+<section id="start" class="screen active">
+  <div class="card">
+    <div class="eyebrow">A little mission from your bride</div>
+    <h1>SUBHAM<br><span class="heart">♡</span> URJA</h1>
+    <div class="date">60 DAYS TO FOREVER</div>
+
+    <p class="subtitle">
+      Before we begin… 👀<br><br>
+      <strong style="font-family:'Cormorant Garamond',serif;font-size:28px;">
+        Are you ready to play a little game?
+      </strong>
+    </p>
+
+    <div id="readyArea" style="position:relative;min-height:130px;max-width:430px;margin:0 auto;">
+      <button class="btn" onclick="startGame()" style="margin:8px;">YES ❤️</button>
+      <button id="noBtn" class="btn"
+        onclick="noThanks()"
+        style="margin:8px;background:#756d65;position:relative;">
+        NO 😏
+      </button>
+    </div>
+
+    <div id="noMessage" class="small" style="min-height:38px;">
+      Choose wisely, almost-husband. 😌
+    </div>
+
+    <div class="small">05 · 12 · 2026</div>
+  </div>
+</section>
+
+<section id="lock1" class="screen">
+  <div class="card">
+    <div class="lock-no">01</div>
+    <div class="eyebrow">Our Beginning</div>
+    <h2>Where it all began…</h2>
+    <p class="subtitle">Every forever has a beginning. Find the date that started ours.</p>
+    <div class="prompt center">
+      <div class="quote">“The day our story officially began.”</div>
+      <strong>Can you remember the date?</strong>
+    </div>
+    <div class="input-wrap"><input id="code1" placeholder="ENTER YOUR ANSWER" autocomplete="off"></div>
+    <div id="error1" class="error"></div>
+    <button class="btn" onclick="unlock(1,'24032025')">Unlock</button>
+  </div>
+</section>
+
+<section id="lock2" class="screen">
+  <div class="card">
+    <div class="lock-no">02</div>
+    <div class="eyebrow">Our First Movie</div>
+    <h2>Lights. Camera. Us.</h2>
+    <p class="subtitle">One of the first little memories that became ours.</p>
+    <div class="prompt center">
+      <div class="quote">“Our first movie together was…”</div>
+      <strong>Think back to our first movie date. 🎬</strong>
+    </div>
+    <div class="input-wrap"><input id="code2" placeholder="ENTER YOUR ANSWER" autocomplete="off"></div>
+    <div id="error2" class="error"></div>
+    <button class="btn" onclick="unlock(2,'HOUSEFULL5')">Unlock</button>
+  </div>
+</section>
+
+<section id="lock3" class="screen">
+  <div class="card">
+    <div class="lock-no">03</div>
+    <div class="eyebrow">Our First Meeting</div>
+    <h2>The first “us” moment</h2>
+    <p class="subtitle">Think back to that very first meeting…</p>
+    <div class="prompt center">
+      <div class="quote">“Where did we first meet?”</div>
+      <strong>Remember our very first meeting…</strong><br>
+      <span>Enter the date to unlock this memory.</span>
+    </div>
+    <div class="input-wrap"><input id="code3" placeholder="ENTER YOUR ANSWER" autocomplete="off"></div>
+    <div id="error3" class="error"></div>
+    <button class="btn" onclick="unlock(3,'02042025')">Unlock</button>
+  </div>
+</section>
+
+<section id="lock4" class="screen">
+  <div class="card">
+    <div class="lock-no">04</div>
+    <div class="eyebrow">Mood Test</div>
+    <h2>“I’m Fine.” 😌</h2>
+    <p class="subtitle">You know me well enough to know that these two words may mean absolutely anything.</p>
+    <div class="prompt">
+      <strong>When your bride says “I’m fine”… what does it ACTUALLY mean?</strong>
+    </div>
+    <div class="options">
+      <div class="option" onclick="chooseMood('A')">A — She is actually fine.</div>
+      <div class="option" onclick="chooseMood('B')">B — She needs food.</div>
+      <div class="option" onclick="chooseMood('C')">C — She wants attention.</div>
+      <div class="option" onclick="chooseMood('D')">D — Good luck, husband. 😭</div>
+    </div>
+    <div id="error4" class="error"></div>
+    <div class="small">Choose wisely. Your future depends on it. 😂</div>
+  </div>
+</section>
+
+<section id="lock5" class="screen">
+  <div class="card">
+    <div class="lock-no">05</div>
+    <div class="eyebrow">A Very Important Question</div>
+    <h2>What am I to you now?</h2>
+    <p class="subtitle">The answer has changed from the beginning… and I absolutely love it.</p>
+    <div class="prompt center">
+      <div class="quote">“Not just girlfriend anymore…”</div>
+      <strong>What am I to you now?</strong>
+    </div>
+    <div class="input-wrap"><input id="code5" placeholder="ENTER YOUR ANSWER" autocomplete="off"></div>
+    <div id="error5" class="error"></div>
+    <button class="btn" onclick="unlock(5,'FIANCEE')">Unlock</button>
+  </div>
+</section>
+
+<section id="lock6" class="screen">
+  <div class="card">
+    <div class="lock-no">06</div>
+    <div class="eyebrow">The Countdown</div>
+    <h2>One number.</h2>
+    <p class="subtitle">As of today, there are this many days until the day we become husband and wife.</p>
+    <div class="prompt center">
+      <div class="quote">“How many days to forever?”</div>
+      <strong style="font-size:28px">Do the countdown. 🗓️</strong>
+    </div>
+    <div class="input-wrap"><input id="code6" placeholder="ENTER THE NUMBER" autocomplete="off"></div>
+    <div id="error6" class="error"></div>
+    <button class="btn" onclick="unlock(6,'60')">Unlock</button>
+  </div>
+</section>
+
+<section id="lock7" class="screen">
+  <div class="card">
+    <div class="lock-no">07</div>
+    <div class="eyebrow">The Date</div>
+    <h2>Our Forever</h2>
+    <p class="subtitle">The final memory lock. The date we've been waiting for.</p>
+    <div class="prompt center">
+      <div class="quote">“On what date do you officially become my husband?”</div>
+      <strong>Enter our wedding date. 💍</strong>
+    </div>
+    <div class="input-wrap"><input id="code7" placeholder="ENTER YOUR ANSWER" autocomplete="off"></div>
+    <div id="error7" class="error"></div>
+    <button class="btn" onclick="unlock(7,'05122026')">Unlock</button>
+  </div>
+</section>
+
+<section id="location" class="screen">
+  <div class="card">
+    <div class="lock-no">08</div>
+    <div class="eyebrow">Final Location Lock</div>
+    <h2>One Last Trail…</h2>
+    <p class="subtitle">You solved our story. Now solve a little piece of me.</p>
+
+    <div class="prompt">
+      <div class="quote">
+        Think of a place that feels a little like my happy place.<br><br>
+        Where my kind of comfort comes in a bowl…<br>
+        where I never really say “that's enough” when there's an extra layer of goodness involved. 😉<br><br>
+        A place where the flavours are a little bold,<br>
+        the mood is a little fun,<br>
+        and somehow… every bite feels like me.<br><br>
+        It’s one of my favourite places,<br>
+        for some of my favourite things,<br>
+        and tonight,<br>
+        I’m adding one more favourite memory there. ❤️
+      </div>
+      <strong>Your final question:</strong><br><br>
+      🗝️ Where is your bride waiting for you?
+    </div>
+
+    <div class="input-wrap"><input id="code8" placeholder="ENTER THE PLACE NAME" autocomplete="off"></div>
+    <div id="error8" class="error"></div>
+
+    <div id="hint1" class="prompt hidden" style="font-size:17px;margin-top:18px;">
+      💡 <strong>Hint 1:</strong><br>
+      It’s a place I genuinely love going to — and if you know my comfort-food choices,
+      you might already be getting close. 😉
+    </div>
+
+    <div id="hint2" class="prompt hidden" style="font-size:17px;margin-top:18px;">
+      🗝️ <strong>One Last Hint:</strong><br>
+      Think of the place where two of my favourite comfort dishes come together —
+      one is a fun, cheesy twist on a familiar favourite, and the other is a bowl of
+      momos with a rich, soupy twist. ❤️
+    </div>
+
+    <button class="btn" onclick="unlock(8,'THEDUGOUT')">Find Your Bride</button>
+    <div id="attemptNote8" class="small">You have 5 tries before your first hint. 😏</div>
+  </div>
+</section>
+
+<section id="final" class="screen">
+  <div class="card">
+    <div class="eyebrow">🎉 You found your final treasure!</div>
+    <h2>Mission Complete</h2>
+
+    <div class="reveal">
+      <div class="place">THE DUGOUT<br><span style="font-size:.65em">— GIRISH PARK —</span></div>
+      <div class="date">05 OCTOBER 2026</div>
+      <div class="time">8:00 PM 🕗</div>
+
+      <p class="subtitle">
+        You found the place that holds some of my favourite things… ❤️
+      </p>
+
+      <p class="quote">
+        But tonight, there’s one more favourite thing waiting for you.
+        <br><strong>ME. 🥹❤️</strong>
+      </p>
+
+      <p class="subtitle">
+        I’ve planned a few gifts,<br>
+        a few surprises,<br>
+        and an evening just for my favourite person.
+      </p>
+
+      <p class="quote"><strong>So get ready, almost-husband. 😏</strong></p>
+
+      <button class="btn" onclick="showScreen('love')">Come Find Your Bride 💌</button>
+    </div>
+
+    <div class="small">SUBHAM ♡ URJA<br>60 DAYS TO FOREVER · 05.12.2026</div>
+  </div>
+</section>
+
+<section id="love" class="screen">
+  <div class="card">
+    <div class="eyebrow">Your final message</div>
+    <h1 style="font-size:58px">COME<br>FIND<br>YOUR BRIDE. ❤️</h1>
+    <p class="quote">I’ll be waiting for you.</p>
+    <div class="date">05 · 10 · 2026</div>
+    <p class="subtitle">The next chapter of our story starts at 8:00 PM. See you there, almost-husband. 🥹❤️</p>
+    <div class="small">SUBHAM ♡ URJA</div>
+  </div>
+</section>
+
+<script>
+const screens = ['start','lock1','lock2','lock3','lock4','lock5','lock6','lock7','location','final','love'];
+
+function startGame(){
+  showScreen('lock1');
+}
+
+function noThanks(){
+  const noBtn = document.getElementById('noBtn');
+  const area = document.getElementById('readyArea');
+  const message = document.getElementById('noMessage');
+
+  message.innerHTML = 'Nice try. 😌 There is only one correct answer.';
+
+  const maxX = Math.max(0, area.clientWidth - noBtn.offsetWidth - 10);
+  const maxY = Math.max(0, area.clientHeight - noBtn.offsetHeight - 10);
+
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = Math.floor(Math.random() * maxX) + 'px';
+  noBtn.style.top = Math.floor(Math.random() * maxY) + 'px';
+
+  setTimeout(() => {
+    message.innerHTML = 'Hmm… the “NO” button seems to be running away. 😂<br>Maybe just press YES? ❤️';
+  }, 350);
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateProgress(id);
+}
+
+function updateProgress(id){
+  const map = {start:0,lock1:1,lock2:2,lock3:3,lock4:4,lock5:5,lock6:6,lock7:7,location:8,final:9,love:10};
+  document.getElementById('progressBar').style.width = ((map[id]||0)/10*100)+'%';
+}
+
+function normalize(value){
+  return value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+}
+
+const attempts = {};
+
+function unlock(n, correct){
+  const input = document.getElementById('code'+n);
+  const error = document.getElementById('error'+n);
+
+  if(normalize(input.value) === normalize(correct)){
+    error.style.color = '#756d65';
+    error.textContent = 'Unlocked ✓';
+    setTimeout(()=>{
+      const next = n === 7 ? 'location' : n === 8 ? 'final' : 'lock'+(n+1);
+      showScreen(next);
+      input.value='';
+      error.textContent='';
+    },700);
+  }else{
+    attempts[n] = (attempts[n] || 0) + 1;
+
+    if(n === 8){
+      if(attempts[n] === 5){
+        document.getElementById('hint1').classList.remove('hidden');
+        document.getElementById('attemptNote8').textContent =
+          'Hint unlocked. You still have 5 more tries. 👀';
+        error.textContent = 'Okay… I think you deserve a little help. 😌';
+      }else if(attempts[n] === 10){
+        document.getElementById('hint2').classList.remove('hidden');
+        document.getElementById('attemptNote8').textContent =
+          'Final hint unlocked. Now you HAVE to find it. 😂❤️';
+        error.textContent = 'Alright, one last hint…';
+      }else if(attempts[n] < 5){
+        error.textContent = 'Not quite… try again, almost-husband. ❤️';
+        document.getElementById('attemptNote8').textContent =
+          (5 - attempts[n]) + ' tries left before your first hint. 😏';
+      }else{
+        error.textContent = 'Still not quite… use the hints above. ❤️';
+      }
+    }else{
+      error.textContent = 'Not quite… try again, almost-husband. ❤️';
+    }
+
+    input.select();
+  }
+}
+
+function chooseMood(answer){
+  const error = document.getElementById('error4');
+  if(answer === 'D'){
+    error.style.color = '#756d65';
+    error.textContent = 'Correct. You know your bride. 😂❤️';
+    setTimeout(()=>showScreen('lock5'),700);
+  }else{
+    error.style.color = '#a74b4b';
+    error.textContent = 'Wrong answer. Think very carefully about your survival. 😂';
+  }
+}
+
+document.querySelectorAll('input').forEach(input=>{
+  input.addEventListener('keydown',e=>{
+    if(e.key === 'Enter'){
+      const n = input.id.replace('code','');
+      const codes = {1:'24032025',2:'HOUSEFULL5',3:'02042025',5:'FIANCEE',6:'60',7:'05122026',8:'THEDUGOUT'};
+      if(codes[n]) unlock(Number(n),codes[n]);
+    }
+  });
+});
+
+updateProgress('start');
+</script>
+</body>
+</html>
